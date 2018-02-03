@@ -1,0 +1,11 @@
+{
+  "name": "react-native-document-picker",
+  "description": "A react native interface to access Documents from dropbox google drive, iCloud",
+  "devDependencies": {
+    "react-native": "^0.28.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "2.1.0"
+}
