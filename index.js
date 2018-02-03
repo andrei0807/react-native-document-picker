@@ -16,6 +16,10 @@ class DocumentPickerUtil {
   static images() {
     return (Platform.OS === 'android') ? "image/*" : "public.image";
   }
+  
+  static videos() {
+    return (Platform.OS === 'android') ? "video/*" : "public.movie";
+  }
 
   static plainText() {
     return (Platform.OS === 'android') ? "text/plain" : "public.plain-text";
