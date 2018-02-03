@@ -17,16 +17,16 @@ class DocumentPickerUtil {
     return (Platform.OS === 'android') ? "image/*" : "public.image";
   }
 
-  static videos() {
-    return (Platform.OS === 'android') ? "video/*" : "public.movie";
-  }
-
   static plainText() {
     return (Platform.OS === 'android') ? "text/plain" : "public.plain-text";
   }
 
   static audio() {
     return (Platform.OS === 'android') ? "audio/*" : "public.audio";
+  }
+  
+  static video() {
+    return (Platform.OS === 'android') ? "video/*" : "public.video";
   }
 
   static pdf() {

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -36,7 +35,6 @@ public class DocumentPicker extends ReactContextBaseJavaModule implements Activi
     private static final int READ_REQUEST_CODE = 41;
 
     private static class Fields {
-        //private static final String FILE_PATH = "filepath";
         private static final String FILE_SIZE = "fileSize";
         private static final String FILE_NAME = "fileName";
         private static final String TYPE = "type";
@@ -126,7 +124,7 @@ public class DocumentPicker extends ReactContextBaseJavaModule implements Activi
         File outputDir = getReactApplicationContext().getCacheDir();
         try {
             File downloaded = download(uri, outputDir);
-            //map.putString(Fields.FILE_PATH, downloaded.getAbsolutePath());
+
             map.putInt(Fields.FILE_SIZE, (int) downloaded.length());
             map.putString(Fields.FILE_NAME, downloaded.getName());
             map.putString(Fields.TYPE, mimeTypeFromName(uri.toString()));
@@ -142,14 +140,13 @@ public class DocumentPicker extends ReactContextBaseJavaModule implements Activi
 
         if(!file.exists())
             return map;
-        //map.putString(Fields.FILE_PATH, file.getAbsolutePath());
+
         map.putInt(Fields.FILE_SIZE, (int) file.length());
         map.putString(Fields.FILE_NAME, file.getName());
         map.putString(Fields.TYPE, mimeTypeFromName(file.getAbsolutePath()));
 
         return map;
     }
-
 
     private WritableMap metaDataFromContentResolver(Uri uri) {
         WritableMap map = Arguments.createMap();
@@ -163,8 +160,6 @@ public class DocumentPicker extends ReactContextBaseJavaModule implements Activi
         try {
             if (cursor != null && cursor.moveToFirst()) {
 
-                //map.putString(Fields.FILE_PATH, cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)));
-                //map.putString(Fields.FILE_PATH, "");
                 map.putString(Fields.FILE_NAME, cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
 
                 int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
