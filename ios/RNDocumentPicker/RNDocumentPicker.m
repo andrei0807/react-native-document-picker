@@ -1,5 +1,7 @@
 #import "RNDocumentPicker.h"
 
+#import <MobileCoreServices/MobileCoreServices.h>
+
 #if __has_include(<React/RCTConvert.h>)
 #import <React/RCTConvert.h>
 #import <React/RCTBridge.h>
@@ -11,7 +13,7 @@
 #define IDIOM    UI_USER_INTERFACE_IDIOM()
 #define IPAD     UIUserInterfaceIdiomPad
 
-@interface RNDocumentPicker () <UIDocumentMenuDelegate,UIDocumentPickerDelegate>
+@interface RNDocumentPicker () <UINavigationControllerDelegate,UIImagePickerControllerDelegate> //<UIDocumentMenuDelegate,UIDocumentPickerDelegate>
 @end
 
 
@@ -37,8 +39,55 @@
 }
 
 RCT_EXPORT_MODULE()
-
 RCT_EXPORT_METHOD(show:(NSDictionary *)options
+                  callback:(RCTResponseSenderBlock)callback) {
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
+    imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:(NSString *)kUTTypeMovie,      nil];
+    
+    [composeCallbacks addObject:callback];
+    
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    [topController presentViewController:imagePicker animated:YES completion:nil];
+    //[self presentViewController:imagePicker animated: YES completion: nil];
+}
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
+    NSString *moviePath;
+    NSMutableDictionary* result = [NSMutableDictionary dictionary];
+    if (CFStringCompare ((__bridge CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo) {
+        NSURL *videoUrl=(NSURL*)[info objectForKey:UIImagePickerControllerMediaURL];
+        moviePath = [videoUrl path];
+        
+        if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum (moviePath)) {
+            //    UISaveVideoAtPathToSavedPhotosAlbum (moviePath, nil, nil, nil);
+        }
+        [result setValue:moviePath forKey:@"uri"];
+        [result setValue:@"" forKey:@"fileName"];
+        [result setValue:@"" forKey:@"fileSize"];
+    }else{
+        
+    }
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    RCTResponseSenderBlock callback = [composeCallbacks lastObject];
+    [composeCallbacks removeLastObject];
+    
+    callback(@[[NSNull null], result]);
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+/*
+RCT_EXPORT_METHOD(show1:(NSDictionary *)options
                   callback:(RCTResponseSenderBlock)callback) {
 
     NSArray *allowedUTIs = [RCTConvert NSArray:options[@"filetype"]];
@@ -113,5 +162,5 @@ RCT_EXPORT_METHOD(show:(NSDictionary *)options
         [url stopAccessingSecurityScopedResource];
     }
 }
-
+*/
 @end

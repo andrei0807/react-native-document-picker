@@ -61,3 +61,5 @@ fastlane/screenshots
 
 iOSInjectionProject/
 node_modules/**/*
+.DS_Store
+android/react-native-document-picker.iml
